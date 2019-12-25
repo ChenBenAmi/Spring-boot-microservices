@@ -25,9 +25,9 @@ public class MovieCatalogController {
 	@Autowired
 	private WebClient.Builder webClient;
 
-	private static final String BASE_MOVIE_URL = "http://localhost:8081/movies/";
+	private static final String BASE_MOVIE_URL = "http://movie-info-service/movies/";
 
-	private static final String BASE_MOVIE_RATING_URL = "http://localhost:8082/rating/";
+	private static final String BASE_MOVIE_RATING_URL = "http://movie-rating-data-service/rating/";
 
 	@GetMapping("/{userId}")
 	public List<CatalogItem> getCatalogItems(@PathVariable("userId") String userId) {
