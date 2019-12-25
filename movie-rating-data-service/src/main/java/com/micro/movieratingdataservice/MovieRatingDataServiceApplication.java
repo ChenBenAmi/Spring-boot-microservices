@@ -8,6 +8,7 @@ public class MovieRatingDataServiceApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MovieRatingDataServiceApplication.class, args);
+		System.out.println("Movie Rating Data service ready");
 	}
 
 }
