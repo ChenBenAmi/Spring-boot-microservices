@@ -1,4 +1,4 @@
-package com.micro.moviecatalogservice.pojo;
+package com.micro.moviecatalogservice.pojos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.micro.moviecatalogservice.pojo.CatalogItem;
-import com.micro.moviecatalogservice.pojo.Movie;
-import com.micro.moviecatalogservice.pojo.UserRating;
+import com.micro.moviecatalogservice.pojos.CatalogItem;
+import com.micro.moviecatalogservice.pojos.Movie;
+import com.micro.moviecatalogservice.pojos.UserRating;
 
 @RestController
 @RequestMapping("/catalog")
@@ -27,22 +27,24 @@ public class MovieCatalogController {
 
 	private static final String BASE_MOVIE_URL = "http://movie-info-service/movies/";
 
-	private static final String BASE_MOVIE_RATING_URL = "http://movie-rating-data-service/rating/";
+	private static final String BASE_MOVIE_RATING_URL = "http://movie-rating-data-service/rating/user/";
 
 	@GetMapping("/{userId}")
 	public List<CatalogItem> getCatalogItems(@PathVariable("userId") String userId) {
 
-		UserRating ratings = webClient.build().get().uri(BASE_MOVIE_RATING_URL +"user/"+ userId).retrieve()
-				.bodyToMono(UserRating.class).block();
-
-		return ratings.getUserRating().stream().map(rating -> {
+//		UserRating userRating = webClient.build().get().uri(BASE_MOVIE_RATING_URL +"user/"+ userId).retrieve()
+//				.bodyToMono(UserRating.class).block();
+		System.out.println("Hey");
+		UserRating userRating=restTemplate.getForObject(BASE_MOVIE_RATING_URL+userId,UserRating.class);
+		System.out.println("Hey1");
+		
+		return userRating.getUserRating().stream().map(rating -> {
 
 //			Movie movie = restTemplate.getForObject("http://localhost:8081/movies/" + rating.getMovieId(), Movie.class);
 
-			Movie movie = webClient.build().get().uri(BASE_MOVIE_URL + rating.getMovieId()).retrieve()
-					.bodyToMono(Movie.class).block();
+			Movie movie = restTemplate.getForObject(BASE_MOVIE_URL+rating.getMovieId(), Movie.class);
 
-			return new CatalogItem(movie.getName(), "test", rating.getRating());
+			return new CatalogItem(movie.getName(), movie.getDescription(), rating.getRating());
 		}).collect(Collectors.toList());
 
 	}

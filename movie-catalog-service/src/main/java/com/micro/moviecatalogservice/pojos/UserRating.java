@@ -1,4 +1,6 @@
-package com.micro.moviecatalogservice.pojo;
+package com.micro.moviecatalogservice.pojos;
+
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Movie {
+public class UserRating {
+	
+	private List<Rating> userRating;
 
-	private String movieId;
-	private String name;
 }
