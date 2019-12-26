@@ -1,5 +1,6 @@
 package com.micro.moviecatalogservice.controllers;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,39 +14,42 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.micro.moviecatalogservice.pojos.CatalogItem;
 import com.micro.moviecatalogservice.pojos.Movie;
+import com.micro.moviecatalogservice.pojos.Rating;
 import com.micro.moviecatalogservice.pojos.UserRating;
+import com.micro.moviecatalogservice.services.MovieInfoService;
+import com.micro.moviecatalogservice.services.MovieRatingService;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 @RestController
 @RequestMapping("/catalog")
 public class MovieCatalogController {
-
+	
 	@Autowired
-	private RestTemplate restTemplate;
-
+	private MovieInfoService movieInfoService;
+	
 	@Autowired
-	private WebClient.Builder webClient;
+	private MovieRatingService movieRatingService;
 
-	private static final String BASE_MOVIE_URL = "http://movie-info-service/movies/";
 
-	private static final String BASE_MOVIE_RATING_URL = "http://movie-rating-data-service/rating/user/";
+
+
 
 	@GetMapping("/{userId}")
 	public List<CatalogItem> getCatalogItems(@PathVariable("userId") String userId) {
-
 //		UserRating userRating = webClient.build().get().uri(BASE_MOVIE_RATING_URL +"user/"+ userId).retrieve()
 //				.bodyToMono(UserRating.class).block();
 		System.out.println("Hey");
-		UserRating userRating=restTemplate.getForObject(BASE_MOVIE_RATING_URL+userId,UserRating.class);
+		UserRating userRating = movieRatingService.getUserRating(userId);
 		System.out.println("Hey1");
-		
 		return userRating.getUserRating().stream().map(rating -> {
-
-//			Movie movie = restTemplate.getForObject("http://localhost:8081/movies/" + rating.getMovieId(), Movie.class);
-
-			Movie movie = restTemplate.getForObject(BASE_MOVIE_URL+rating.getMovieId(), Movie.class);
-
-			return new CatalogItem(movie.getName(), movie.getDescription(), rating.getRating());
+			return movieInfoService.getMovieInfo(rating);
 		}).collect(Collectors.toList());
-
 	}
+
+
+
+	
+
+	
+
 }
